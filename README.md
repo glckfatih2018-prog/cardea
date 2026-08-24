@@ -2,6 +2,8 @@
 
 **Sponsor someone onto Stellar without sending them XLM.**
 
+**Site:** [cardea-site.vercel.app](https://cardea-site.vercel.app) · **Docs:** [cardea-site.vercel.app/docs](https://cardea-site.vercel.app/docs/)
+
 An employer paying staff in USDC, or anyone who wants to bring a person onto the network,
 locks XLM once. The people they cover get working accounts and never hold XLM at all. The
 locked XLM is not spent and can be released again.
