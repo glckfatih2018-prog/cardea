@@ -1,0 +1,41 @@
+{
+  "network": "Public Global Stellar Network ; September 2015",
+  "date": "2026-09-30",
+  "fundingWallet": "GANPX6FZFV46PDWUZFKQT3K3T6RC2VAH6BEBQYE67EE52S5O4JNGTCVU",
+  "fundingWalletReceivedXlm": "25.0000000",
+  "createAccountsTransaction": "d6f0c60c81bf8d7ddef690a9dcc0d6d89d985ad6275101ba1a1eace8d9ba74a2",
+  "createAccountsLedger": 64688285,
+  "roles": [
+    {
+      "role": "sponsor",
+      "address": "GBNISQNIW6EAV5FLTHX6YHPPIGG5AJKWJKR46IYIUCQVOWEWXWZ6UPUQ",
+      "fundedXlm": "17.0000000",
+      "setThresholdTransaction": "b7252251c0600135af14a1881dfdde7cc0b512051d5198eba6e47374604a54df"
+    },
+    {
+      "role": "channel1",
+      "address": "GA6H2DM5QWOFTRYKBON3A5NXDKRE3RLOUUBE6ELJ5C5A7ESBIA5ZIBVR",
+      "fundedXlm": "1.2000000",
+      "setThresholdTransaction": "22aead8ddbbec8e652941bd6ecd42ee219044be846293b40d08227bad36f522b"
+    },
+    {
+      "role": "channel2",
+      "address": "GB5AGCGDZDLDUJEKAEEILZZDDEU2DGUGLPQBBBRIUUJWYEA476TA2P3Q",
+      "fundedXlm": "1.2000000",
+      "setThresholdTransaction": "1d2b9c79c68606ff3d32795e22c5b92d695c2dfedc94b2e7725d558620a052fa"
+    },
+    {
+      "role": "feePayer",
+      "address": "GBAED6KYVUAHPCZCNRCBA57P67HT6M2I3DQRJHFTEB6TFYWWLLOLUVXI",
+      "fundedXlm": "1.2000000",
+      "setThresholdTransaction": "6141f55c911cd854151061ed117b977c6a8b600d480d700cd998ce4d4cb57256"
+    }
+  ],
+  "fundingWalletBalanceAfterXlm": "4.3999600",
+  "readOnlyPreflight": {
+    "service": { "passed": 42, "failed": 0, "ready": true },
+    "signer": { "passed": 30, "failed": 0, "ready": true }
+  },
+  "publicDailyAdmissions": 0,
+  "mainnetRecipientOnboardings": 0
+}

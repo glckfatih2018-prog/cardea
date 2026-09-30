@@ -1,0 +1,26 @@
+# Optional local PostgreSQL. Application and worker run with npm on the host.
+services:
+  db:
+    image: postgres:17.6-bookworm
+    environment:
+      POSTGRES_USER: cardea
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    secrets:
+      - pg_password
+    ports:
+      - "127.0.0.1:55433:5432"
+    volumes:
+      - cardea_database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cardea -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+secrets:
+  pg_password:
+    file: ./.local/pg-password
+volumes:
+  cardea_database:

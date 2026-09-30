@@ -1,0 +1,51 @@
+{
+  "name": "cardea",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Self-hosted sponsored Stellar onboarding (testnet by default; mainnet by explicit, fail-closed configuration)",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "worker": "tsx src/worker-main.ts",
+    "build": "tsc --noEmit && vite build",
+    "start": "tsx src/main.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "test:testnet": "tsx scripts/testnet.ts",
+    "setup:testnet": "tsx scripts/setup-testnet.ts",
+    "check": "tsc --noEmit",
+    "security": "npm audit --omit=dev && tsx --test tests/security.test.ts",
+    "init:local": "tsx scripts/init-local.ts",
+    "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" \"web/**/*.{tsx,css,html}\" \"*.{json,ts,yaml}\"",
+    "test:auto": "tsx scripts/testnet-auto.ts",
+    "signer": "tsx src/signer-main.ts",
+    "preflight:mainnet": "tsx scripts/mainnet-preflight.ts"
+  },
+  "dependencies": {
+    "@fastify/cookie": "11.1.2",
+    "@fastify/helmet": "13.1.1",
+    "@fastify/rate-limit": "11.2.0",
+    "@fastify/static": "10.1.3",
+    "@stellar/freighter-api": "6.0.1",
+    "@stellar/stellar-sdk": "17.0.1",
+    "fastify": "5.12.4",
+    "pg": "8.23.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tsx": "4.23.13",
+    "zod": "4.6.4"
+  },
+  "devDependencies": {
+    "@types/node": "26.5.1",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "prettier": "3.9.6",
+    "typescript": "7.0.2",
+    "vite": "8.3.0"
+  }
+}

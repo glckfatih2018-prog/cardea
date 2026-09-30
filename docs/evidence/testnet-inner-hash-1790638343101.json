@@ -1,0 +1,16 @@
+{
+  "network": "Test SDF Network ; September 2015",
+  "observedAt": "2026-09-28T23:32:23.099Z",
+  "innerHash": "c00828a6b30199cbfced01b271c4eee49d5d9af525da458359f28ece31c09cee",
+  "outerHash": "788f9f9b5b354e6f2c1dc591deb8a3e268387878c83f6ac917923615778868e2",
+  "outerResultHash": "788f9f9b5b354e6f2c1dc591deb8a3e268387878c83f6ac917923615778868e2",
+  "innerLookupHash": "c00828a6b30199cbfced01b271c4eee49d5d9af525da458359f28ece31c09cee",
+  "feeAccount": "GDJMVMC4ZOKH56F2PWUR3R2CKNU5RA36SL2XGAQOWFGP4CTYO7W7WEBP",
+  "ledger": 4922951,
+  "checks": [
+    "foreign fee bump landed",
+    "same signed inner has distinct outer hash",
+    "Horizon lookup by inner hash resolves the landed envelope",
+    "Horizon response identifies foreign fee account and outer hash"
+  ]
+}

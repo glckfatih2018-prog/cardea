@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-14",
+  "scope": "Authenticated Vercel relay, constrained Unix signer, allocation observations outside locks, Vercel CSP",
+  "localVerification": {
+    "command": "npm run build && npm test",
+    "tests": 71,
+    "passed": 71,
+    "failed": 0
+  },
+  "regressions": [
+    "cross-client login isolation",
+    "forged/stale/path-replayed relay attestations",
+    "encoded API aliases",
+    "invalid invitation avoids Horizon",
+    "slow observation permits unrelated DB writes and revalidates policy",
+    "heartbeat updates do not starve allocations",
+    "modified signer templates and roles rejected",
+    "noncanonical sequence rejected",
+    "signer ceilings persist across restart",
+    "keyless remote onboarding and graduation",
+    "Vercel HTML CSP",
+    "explicit nested Vercel relay routing, cookie forwarding and route rejection"
+  ],
+  "limitations": [
+    "FakeChain and isolated PostgreSQL for adversarial tests; not a destructive live attack",
+    "No physical power-loss fault injection",
+    "API/database compromise can request policy-shaped actions within independent signer ceilings; this is not an HSM or independent administrator authentication"
+  ],
+  "liveVerification": {
+    "health": 200,
+    "unauthenticatedSession": 401,
+    "login": 200,
+    "dashboard": 200,
+    "logout": 200,
+    "workerHealthy": true,
+    "directBackendHealth": 403,
+    "malformedUnixSignerRequest": 403,
+    "apiCannotReadSignerKeys": true,
+    "apiCannotModifySignerCode": true,
+    "browserLandingAndDocs": "Rendered with no captured error/warning; CSP present",
+    "site": "https://cardea-site.vercel.app",
+    "deployment": "cardea-site-2e9b32601-omermetehanizal-9130s-projects.vercel.app",
+    "backendCommit": "8bec823"
+  }
+}

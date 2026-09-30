@@ -1,0 +1,24 @@
+[Unit]
+Description=Cardea testnet API
+After=network-online.target postgresql.service
+Wants=network-online.target
+Requires=cardea-signer.service
+After=cardea-signer.service
+[Service]
+Type=simple
+User=cardea
+Group=cardea
+SupplementaryGroups=cardea-sign
+WorkingDirectory=/opt/cardea
+Environment=CARDEA_CONFIG=/etc/cardea/config.json
+Environment=HOST=127.0.0.1
+ExecStart=/usr/bin/env npm start
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+UMask=0077
+[Install]
+WantedBy=multi-user.target

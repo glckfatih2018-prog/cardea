@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-09-13T21:15:05.860Z",
+  "mode": "OFFLINE_ONLY",
+  "sdkVersion": "17.0.0",
+  "runtime": "v25.6.0",
+  "checks": 7,
+  "envelopeChangesAfterSigning": true,
+  "signaturePayloadUnchanged": true,
+  "hashUnchanged": true,
+  "recipientSignatureValid": true,
+  "changedTrustLimitRejected": true,
+  "wrongNetworkRejected": true,
+  "innerFee": "0",
+  "outerFeeStroops": "500",
+  "operations": 4,
+  "note": "SDK construction/signature verification only; not a wallet interaction or ledger acceptance test."
+}

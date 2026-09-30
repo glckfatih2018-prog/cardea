@@ -1,0 +1,22 @@
+{
+  "network": "Stellar Testnet",
+  "pool": "5159f505-fd73-4f62-b227-c2ccda59ca4e",
+  "results": [
+    {
+      "case": "zero-XLM account",
+      "recipient": "GAIRDCQSYGDREW4JNXAM2RSN7XBV7GZQRBAXNYA3WE356IALOMCEUKFG",
+      "state": "CONFIRMED",
+      "hash": "3b1724edbea9602514e1cf098bf9c720d9252385de10d23099337dcc85a1fe48",
+      "sponsoredUnits": 3,
+      "USDC": "0.0000000"
+    },
+    {
+      "case": "existing account",
+      "recipient": "GD4GL3LRYIHW5NB2V543I6C2SCOBY6PKFH2CVRLLYPWFHCA5OMJQ6VJW",
+      "state": "CONFIRMED",
+      "hash": "3700da2b5807b1336b023a51568872ef3c744598cd2ef744e58f1c4319d032e1",
+      "sponsoredUnits": 1,
+      "USDC": "0.0000000"
+    }
+  ]
+}

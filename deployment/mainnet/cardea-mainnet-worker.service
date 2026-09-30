@@ -1,0 +1,25 @@
+[Unit]
+Description=Cardea mainnet reconciliation worker
+After=network-online.target postgresql.service cardea-mainnet-signer.service
+Wants=network-online.target
+Requires=cardea-mainnet-signer.service
+
+[Service]
+Type=simple
+User=cardea-mainnet
+Group=cardea-mainnet
+SupplementaryGroups=cardea-mainnet-sign
+WorkingDirectory=/opt/cardea-mainnet
+Environment=CARDEA_CONFIG=/etc/cardea-mainnet/config.json
+ExecStart=/usr/bin/env npm run worker
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectProc=invisible
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

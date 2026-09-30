@@ -1,0 +1,38 @@
+{
+  "network": "Stellar Mainnet",
+  "verifiedAt": "2026-09-30",
+  "method": "Recipient approved in Freighter through the HTTPS Cardea onboarding page; independently checked against Horizon and the Cardea confirmation page",
+  "transaction": "1f3bd2ad1fc07776a8f75d817d6cd8880b7867196227c1a7ab0b8da25f4463df",
+  "transactionUrl": "https://horizon.stellar.org/transactions/1f3bd2ad1fc07776a8f75d817d6cd8880b7867196227c1a7ab0b8da25f4463df",
+  "ledger": 64688752,
+  "successful": true,
+  "feeChargedStroops": 500,
+  "recipient": "GA2RPA6GDRK73MXPKZSJ3BFRJQPF4KMLWIKV2IQUODH7ASBZEXSFWAQC",
+  "recipientXlmBalance": "0.0000000",
+  "recipientSignerCount": 1,
+  "recipientSponsoredEntries": 3,
+  "sponsor": "GBNISQNIW6EAV5FLTHX6YHPPIGG5AJKWJKR46IYIUCQVOWEWXWZ6UPUQ",
+  "operations": [
+    "begin_sponsoring_future_reserves",
+    "create_account",
+    "change_trust",
+    "end_sponsoring_future_reserves"
+  ],
+  "asset": {
+    "code": "USDC",
+    "issuer": "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+    "trustlinePresent": true,
+    "balance": "0.0000000",
+    "sponsor": "GBNISQNIW6EAV5FLTHX6YHPPIGG5AJKWJKR46IYIUCQVOWEWXWZ6UPUQ"
+  },
+  "cardeaStatus": "CONFIRMED",
+  "publicPool": {
+    "id": "df5434c4-7aa9-4546-a6fe-9107d52b4839",
+    "access": "public",
+    "participantsAfterAcceptance": 2,
+    "participantLimit": 10,
+    "publicDailyAdmissions": 1,
+    "reserveCeilingXlm": "15",
+    "directoryUrl": "https://cardea-mainnet-pilot.vercel.app/receive"
+  }
+}

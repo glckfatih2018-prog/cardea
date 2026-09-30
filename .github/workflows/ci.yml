@@ -1,0 +1,32 @@
+name: Test Cardea
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.6-bookworm
+        env:
+          POSTGRES_USER: cardea
+          POSTGRES_PASSWORD: disposable-ci-password
+          POSTGRES_DB: cardea_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U cardea -d cardea_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://cardea:disposable-ci-password@127.0.0.1:5432/cardea_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: npm audit --omit=dev

@@ -1,0 +1,27 @@
+{
+  "commit": "db97ec145b50159645be783b7e4e915b9dccce14",
+  "startedAt": "2026-09-13T21:57:12.451Z",
+  "steps": [
+    {
+      "command": "git clone --no-local <committed repository> <clean temporary directory>",
+      "exitCode": 0
+    },
+    {
+      "command": "npm ci",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm test",
+      "exitCode": 0
+    },
+    {
+      "command": "npm audit --omit=dev",
+      "exitCode": 0
+    }
+  ],
+  "finishedAt": "2026-09-13T21:57:21.465Z"
+}

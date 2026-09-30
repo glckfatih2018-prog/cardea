@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-09-13T21:05:57.631654+00:00",
+  "data": {
+    "network": {
+      "url": "https://horizon-testnet.stellar.org",
+      "values": {
+        "network_passphrase": "Test SDF Network ; September 2015",
+        "horizon_version": "28.0.1-a70eb47f76985d372de3e59f4d75c7f8542752f7",
+        "core_version": "stellar-core 28.0.1 (947aad8413c189d85504acf72207e85eeda9b021)",
+        "current_protocol_version": 28,
+        "history_latest_ledger": 4661994
+      }
+    },
+    "ledger": {
+      "url": "https://horizon-testnet.stellar.org/ledgers?order=desc&limit=1",
+      "values": {
+        "sequence": 4661994,
+        "closed_at": "2026-09-13T21:05:57Z",
+        "base_reserve_in_stroops": 5000000,
+        "base_fee_in_stroops": 100,
+        "protocol_version": 28
+      }
+    },
+    "sdk": {
+      "url": "https://registry.npmjs.org/@stellar/stellar-sdk/latest",
+      "values": {
+        "name": "@stellar/stellar-sdk",
+        "version": "17.0.1",
+        "engines": {
+          "node": ">=22.12.0"
+        }
+      }
+    },
+    "freighter": {
+      "url": "https://registry.npmjs.org/@stellar/freighter-api/latest",
+      "values": {
+        "name": "@stellar/freighter-api",
+        "version": "6.0.1",
+        "engines": null
+      }
+    }
+  }
+}

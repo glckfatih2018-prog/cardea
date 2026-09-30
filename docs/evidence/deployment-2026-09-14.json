@@ -1,0 +1,31 @@
+{
+  "date": "2026-09-14",
+  "backendHealth": {
+    "ready": true,
+    "network": "testnet"
+  },
+  "backend": "https://cardea-api.103-244-227-82.sslip.io/api/health",
+  "services": [
+    "cardea-api",
+    "cardea-worker"
+  ],
+  "migratedPools": 4,
+  "migratedIntents": 26,
+  "pendingSignedAtMigration": 0,
+  "vercelDeployment": "dpl_FQPjz7V5dNsgrbH93JF1hZMeuKUu",
+  "vercelStatus": "READY",
+  "promoted": true,
+  "initialBlockedDeployment": "dpl_CtYNBqEGGivMLE5hbW4RhLoZfJhc",
+  "initialBlockReason": "TEAM_ACCESS_REQUIRED: commit author is not authorized for this Vercel project",
+  "url": "https://cardea-site.vercel.app",
+  "verifiedChecks": [
+    "landing /app /docs HTTP 200",
+    "proxied testnet health ready",
+    "unauthenticated and encoded admin routes HTTP 401",
+    "authenticated dashboard HTTP 200",
+    "HttpOnly Secure SameSite=Strict session",
+    "wrong Origin HTTP 403",
+    "missing CSRF HTTP 403",
+    "authenticated logout HTTP 200"
+  ]
+}

@@ -1,0 +1,29 @@
+[Unit]
+Description=Cardea constrained mainnet signer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=cardea-mainnet-signer
+Group=cardea-mainnet-sign
+WorkingDirectory=/opt/cardea-mainnet
+Environment=CARDEA_CONFIG=/etc/cardea-mainnet-signer/config.json
+Environment=CARDEA_SIGNER_SOCKET=/run/cardea-mainnet-signer/sign.sock
+Environment=CARDEA_SIGNER_JOURNAL=/var/lib/cardea-mainnet-signer/journal.json
+ExecStart=/usr/bin/env npm run signer
+RuntimeDirectory=cardea-mainnet-signer
+RuntimeDirectoryMode=0750
+StateDirectory=cardea-mainnet-signer
+StateDirectoryMode=0700
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectProc=invisible
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

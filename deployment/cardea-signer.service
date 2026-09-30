@@ -1,0 +1,26 @@
+[Unit]
+Description=Cardea constrained testnet signer
+After=network-online.target
+[Service]
+Type=simple
+User=cardea-signer
+Group=cardea-sign
+WorkingDirectory=/opt/cardea
+Environment=CARDEA_CONFIG=/etc/cardea-signer/config.json
+Environment=CARDEA_SIGNER_SOCKET=/run/cardea-signer/sign.sock
+Environment=CARDEA_SIGNER_JOURNAL=/var/lib/cardea-signer/journal.json
+ExecStart=/usr/bin/env npm run signer
+RuntimeDirectory=cardea-signer
+RuntimeDirectoryMode=0750
+StateDirectory=cardea-signer
+StateDirectoryMode=0700
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectProc=invisible
+UMask=0077
+[Install]
+WantedBy=multi-user.target

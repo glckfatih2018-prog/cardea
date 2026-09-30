@@ -1,0 +1,35 @@
+{
+  "network": "Public Global Stellar Network ; September 2015",
+  "date": "2026-09-30",
+  "method": "Locally controlled recipient key signed through the production HTTPS API; not a Freighter browser signature",
+  "poolId": "df5434c4-7aa9-4546-a6fe-9107d52b4839",
+  "recipient": "GAOCHY77GK6BZUEPJ3DEK24H473R2RRIVKF2PVEZIAFGPPJBC5PA54ZU",
+  "intentId": "4da675e7-7b08-4507-8efa-e246a8f196bd",
+  "feeBumpHash": "aaaafcbbbdb85b8183646f839deac7f9afa47ad6ab5a0dd6a83fe31a4aaa6f7f",
+  "ledger": 64688405,
+  "serviceState": "CONFIRMED",
+  "recipientXlm": "0.0000000",
+  "usdcTrustline": true,
+  "usdcIssuer": "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+  "sponsor": "GBNISQNIW6EAV5FLTHX6YHPPIGG5AJKWJKR46IYIUCQVOWEWXWZ6UPUQ",
+  "sponsorEntryCountBefore": 0,
+  "sponsorEntryCountAfter": 3,
+  "isolatedRestore": {
+    "encryptedBackupCopiedOffHost": true,
+    "archiveSha256": "39f16dee4bbfb98a60e1b2d7c583ff8cb1f5b8656c6136031e4c7be8d3fc09ae",
+    "stateRows": 1,
+    "pools": 1,
+    "confirmedIntents": 1,
+    "auditRows": 6,
+    "signerJournalEntries": 1,
+    "restoredSignerLoaded": true,
+    "temporaryDatabaseRemoved": true
+  },
+  "verification": {
+    "isolatedTests": "129/129",
+    "typecheckAndProductionBuild": "passed",
+    "knownProductionDependencyAdvisories": 0,
+    "readOnlyServicePreflight": "42/42",
+    "readOnlySignerPreflight": "30/30"
+  }
+}

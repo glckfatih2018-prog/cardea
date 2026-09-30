@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-30T02:29:50.556Z",
+  "network": "Stellar Testnet",
+  "environment": "isolated local Cardea installation",
+  "pool": {
+    "id": "5b6162fa-56a5-4357-8724-9e3115e3e14f",
+    "name": "Instawards 50-slot demo",
+    "participantLimit": 50
+  },
+  "checks": {
+    "allowlist": {
+      "expected": 50,
+      "actual": 50,
+      "active": true
+    },
+    "unlisted": {
+      "recipient": "GBMBTO4K2RSNJEJA5JAFMKOEONCAJO6G5IZRCCKKDMC3KCUDIPYKDP4D",
+      "httpStatus": 404,
+      "error": "Invitation unavailable"
+    },
+    "onboarding": {
+      "recipient": "GBHECG7OAC5JS45MHTYJPSAZL7RTCE7FS77774FPZLHK5F3L6BJPOTBR",
+      "transaction": "1d2bb1cd398ffe048d18a25c5f649f93fa33e386cf355014118d568748dcb881",
+      "innerHash": "17ef09f6bd935b1164c74cbae8fe6619d6428af29ad2cecbc5b4fac12a297799",
+      "ledger": 4942364,
+      "xlm": "0.0000000",
+      "usdcTrustline": true,
+      "soleSigner": true,
+      "numSponsored": 3
+    }
+  }
+}

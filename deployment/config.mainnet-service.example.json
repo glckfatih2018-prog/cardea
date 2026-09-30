@@ -1,0 +1,32 @@
+{
+  "network": "Public Global Stellar Network ; September 2015",
+  "mainnet": {
+    "acknowledge": "I understand this installation signs real XLM sponsorships on the Stellar public network"
+  },
+  "databaseUrl": "postgresql://cardea_mainnet:<DATABASE-PASSWORD>@127.0.0.1:55433/cardea_mainnet",
+  "namespace": "<DEDICATED-MAINNET-NAMESPACE>",
+  "origin": "https://<PRODUCTION-SITE-HOST>",
+  "port": 4318,
+  "operatorHash": "<OUTPUT-OF-passwordHash>",
+  "relaySecret": "<SAME-32-PLUS-CHARACTER-SECRET-AS-VERCEL-CARDEA_RELAY_SECRET>",
+  "keys": [],
+  "signerSocket": "/run/cardea-mainnet-signer/sign.sock",
+  "sponsors": [
+    "<SPONSOR-PUBLIC-KEY-G...>"
+  ],
+  "channels": [
+    "<CHANNEL-1-PUBLIC-KEY-G...>",
+    "<CHANNEL-2-PUBLIC-KEY-G...>"
+  ],
+  "feePayer": "<FEE-PAYER-PUBLIC-KEY-G...>",
+  "baseFee": 1000,
+  "maxDailyAttempts": 3,
+  "autoGraduate": false,
+  "reserveCeiling": "<TOTAL-XLM-RESERVE-CEILING-ACROSS-ALL-POOLS, e.g. 150>",
+  "signerLimits": {
+    "count": "<DISTINCT-SIGNATURES-PER-UTC-DAY, integer>",
+    "fee": "<WORST-CASE-FEE-XLM-PER-UTC-DAY, e.g. 0.5>",
+    "maintenanceReserve": "<RESERVED-SIGNATURES-PER-UTC-DAY-INTEGER-AT-LEAST-1>"
+  },
+  "publicDailyAdmissions": 0
+}

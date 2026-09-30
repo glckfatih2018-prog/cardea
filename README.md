@@ -1,92 +1,82 @@
 # Cardea
 
-**Sponsor someone onto Stellar without sending them XLM.**
+**Open a Stellar account without asking the recipient to buy XLM first.**
 
-**Site:** [cardea-site.vercel.app](https://cardea-site.vercel.app) · **Docs:** [cardea-site.vercel.app/docs](https://cardea-site.vercel.app/docs/)
+Cardea is a self-hosted, open-source Stellar application. It runs on **testnet** by default; the Stellar public network is available only through an explicit, fail-closed configuration described in [Mainnet readiness](docs/MAINNET.md). A limited mainnet pilot is live at [cardea.website](https://cardea.website); it has completed real recipient onboarding, but has not received an independent security audit. An institution chooses eligible recipients, sponsors their account and USDC trustline reserves, and pays the transaction fee. Each recipient connects their own Freighter wallet and signs one fixed onboarding transaction. Their wallet remains theirs.
 
-An employer paying staff in USDC, or anyone who wants to bring a person onto the network,
-locks XLM once. The people they cover get working accounts and never hold XLM at all. The
-locked XLM is not spent and can be released again.
+The reserve is locked in the sponsor's balance, not transferred to the recipient. At a 0.5-XLM base reserve, one account plus a USDC trustline requires three units: 1.5 XLM. Cardea reads the network reserve value. When recipients can cover their own reserve, the worker automatically releases sponsorship; another configured sponsor can also take it over without another recipient signature.
 
-Cardea is the Roman goddess of the door hinge. Ovid gives her one power: she opens what is
-closed, and closes what is open.
+## What is implemented
 
-## The problem
+- CAP-33 sponsored account creation and USDC trustline, wrapped in a CAP-15 fee-bump.
+- Strict signed-body comparison and recipient-signature validation before institution co-signing.
+- PostgreSQL reservations, channel leases, durable submission outbox, replay-safe reconciliation and audit events.
+- Public and private operator pools, address allowlists, recipient-bound invitation links, reserve/fee limits and pause controls.
+- Continuous sponsor-counter monitoring, automatic graduation and sponsor handover.
+- A dedicated landing page `/`, operator workspace `/app`, recipient directory `/receive`, recipient invitation page `/onboard/:token`, and documentation `/docs/`.
+- Automated application/security tests and archived real testnet and limited mainnet acceptance evidence.
 
-On Stellar an address existing is not free. The ledger charges reserves in XLM:
+This is an application delivery with archived testnet and mainnet pilot evidence, **not a custody product or independent security certification**. It does not send payroll, distribute USDC, generate recipient wallets, deploy Soroban contracts or provide multi-tenant SaaS. Mainnet operation requires the acknowledgement, explicit budgets, dedicated namespace, remote signer and HTTPS relay described in [docs/MAINNET.md](docs/MAINNET.md).
 
-| Entry | XLM |
-| --- | --- |
-| The account itself | 1.0 |
-| A USDC trustline | 0.5 |
-| **Per person** | **1.5** |
+## Start locally
 
-Someone with zero XLM cannot be paid in USDC. A payment to an address that was never
-created is rejected outright, and an address that exists but cannot cover the trustline
-reserve cannot open one.
+Node.js 24 LTS and PostgreSQL 17 are required. Docker is optional for the database.
 
-For a company paying fifty people, that is fifty accounts that do not exist yet. The way
-this is handled today is to send every recipient about 2 XLM, which is gone for good, or to
-tell them to buy XLM on an exchange first, which is not a sentence that belongs in a payroll
-run.
+```sh
+npm ci
+npm run init:local
+docker compose up -d db
+npm run setup:testnet
+npm run build
+export CARDEA_CONFIG="$PWD/.local/config.json"
+npm start
+```
 
-Stellar has carried the fix at the protocol level since November 2020.
-[CAP-33](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0033.md) lets one
-account carry another's reserve without gaining any authority over it, and
-[CAP-15](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0015.md) lets a
-third party pay the fee. Cardea is the tool that puts those to work.
+In another terminal, start `npm run worker` with the same `CARDEA_CONFIG`. Open **http://localhost:4317** and use the private password in `.local/operator-password`. No private key belongs in the browser or GitHub.
 
-Note that covering someone's fee is not enough on its own. Fees and reserves are separate
-charges, and paying the fee does not give an account the reserve a trustline requires.
+For native PostgreSQL, alternate database URLs, Linux service templates, TLS, permissions and recovery, see **[Operations](docs/OPERATIONS.md)**. Run from the repository root. Keep a dedicated testnet installation; do not share its signer accounts with another namespace or application.
 
-## Two sides
+## Verify
 
-### The sponsor
+```sh
+npm run build
+npm test
+npm run security
+# Explicit live testnet acceptance (stop the background worker for this harness):
+CARDEA_CONFIG="$PWD/.local/config.json" npm run test:testnet
+```
 
-An employer paying staff or contractors in USDC, a programme paying out grants or bounties,
-an organisation disbursing aid.
+The application/security tests use real PostgreSQL with isolated namespaces and a fake ledger for controlled faults. The live harness uses Stellar testnet and archives transaction hashes, returned XDR and account snapshots. Its generated recipient keypairs are test fixtures; they are not evidence of a Freighter click-through. The separate wallet acceptance record identifies what was actually observed.
 
-They open a pool, fund it, and set who is covered: an uploaded list of addresses, or a rule
-with ceilings. They see how much is committed and to whom, and they can stop taking on
-anything further at any moment. The pool is an account in their own name.
+See **[Evidence and release status](docs/evidence/README.md)** for executed checks, reproduction commands, transaction links and remaining limitations. The original [planning matrix](docs/planning/TEST-MATRIX.md) records proposed acceptance cases, not automatically passing tests.
 
-What they give up is not the money. It is the money being liquid for a while.
+## How it works
 
-### The recipient
+```text
+Operator → recipient allowlist + recipient-bound invitation
+Recipient wallet → one signature over the saved onboarding transaction
+API → verify exact signing payload and recipient signature
+    → institution signatures + fee-bump → PostgreSQL durable outbox
+Worker → submit/reconcile by hash → confirmed account and USDC trustline
+       → monitor reserves → graduate or transfer sponsorship
+```
 
-Someone who installed a wallet and holds nothing.
+The inner transaction contains `BeginSponsoringFutureReserves`, `CreateAccount` with zero starting balance, `ChangeTrust` for the profile's fixed USDC issuer, and `EndSponsoringFutureReserves`. The server compares the **signature payload**, not the whole signed envelope (the signature necessarily changes the envelope), then validates the signature separately.
 
-They open a link, connect that wallet, sign once, and their account exists with a USDC
-trustline attached. No exchange, no XLM purchase, and they never encounter the word
-"trustline".
+Pausing blocks new requests and co-signing. It cannot revoke a signature already issued to the network. Unknown submission outcomes retain their channel and reserve until reconciled. The sponsor, fee payer and channel keys are institution-owned and loaded from a private configuration file; the recipient key stays in Freighter.
 
-CAP-33 requires both the sponsor and the sponsored account to sign the same transaction, so
-a completely passive recipient cannot be onboarded. That single signature is the whole trust
-question, so it is worth saying how it is handled: Cardea builds the transaction and hands
-over an unsigned envelope, and what comes back is compared byte for byte against what was
-sent. Anything that differs is refused before it is signed or submitted. What the recipient
-authorises is fixed by construction, not inspected clause by clause afterwards and hoped to
-be complete.
+## Documentation
 
-## How the XLM comes back
+- [Operations, setup and recovery](docs/OPERATIONS.md)
+- [Mainnet readiness and checklist](docs/MAINNET.md)
+- [API integration](docs/API.md)
+- [Security model and audit results](SECURITY.md)
+- [Evidence index](docs/evidence/README.md)
+- [Requirements and research](docs/planning/README.md)
+- [Contribution guide](CONTRIBUTING.md)
 
-It is never transferred to the recipient. It stays in the sponsor's account as minimum
-balance, and is released when the recipient can carry the reserve themselves, when another
-sponsor takes the position over, or when the recipient closes the trustline or the account.
+The root JavaScript files (`spike.js`, `negative.js`, `graduate.js`, `handover.js`, `xlm-arrival.js`) are historical protocol experiments. They are not the application, are not run by npm test, and are not the release acceptance harness. Use the TypeScript application and scripts above.
 
-Nothing here pays a yield and nothing here is an investment. The only thing a sponsor gets
-back is what they put in.
+References: Stellar [sponsored reserves](https://developers.stellar.org/docs/build/guides/transactions/sponsored-reserves), [fee-bump transactions](https://developers.stellar.org/docs/build/guides/transactions/fee-bump-transactions), [channel accounts](https://developers.stellar.org/docs/build/guides/transactions/channel-accounts), and [Freighter](https://docs.freighter.app/docs/playground/signtransaction/).
 
-## Scope
-
-**In:** the transaction builder and its validation layer, a channel account pool, sponsor
-pool setup with eligibility rules and ceilings, reserve accounting, automatic release of
-recipients who become self-sufficient, and the single-signature recipient flow.
-
-**Out:** Soroban. Assets other than USDC. Generating or holding a wallet on anyone's behalf.
-Moving anyone's money: Cardea prepares accounts, it does not deliver funds. Public
-leaderboards and open donation pools.
-
-## Licence
-
-MIT.
+MIT licensed. The mainnet pilot was developed in **Foreveranka/cardea** and is delivered in this repository.

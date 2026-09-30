@@ -1,0 +1,32 @@
+{
+  "network": "Public Global Stellar Network ; September 2015",
+  "mainnet": {
+    "acknowledge": "I understand this installation signs real XLM sponsorships on the Stellar public network"
+  },
+  "databaseUrl": "unused-by-signer",
+  "namespace": "<SAME-DEDICATED-MAINNET-NAMESPACE-AS-SERVICE>",
+  "origin": "https://<PRODUCTION-SITE-HOST>",
+  "operatorHash": "<SAME-OPERATOR-HASH-AS-SERVICE>",
+  "keys": [
+    "<SPONSOR-SECRET-KEY-S...>",
+    "<CHANNEL-1-SECRET-KEY-S...>",
+    "<CHANNEL-2-SECRET-KEY-S...>",
+    "<FEE-PAYER-SECRET-KEY-S...>"
+  ],
+  "sponsors": [
+    "<SPONSOR-PUBLIC-KEY-G...>"
+  ],
+  "channels": [
+    "<CHANNEL-1-PUBLIC-KEY-G...>",
+    "<CHANNEL-2-PUBLIC-KEY-G...>"
+  ],
+  "feePayer": "<FEE-PAYER-PUBLIC-KEY-G...>",
+  "baseFee": 1000,
+  "reserveCeiling": "<SAME-VALUE-AS-SERVICE>",
+  "signerLimits": {
+    "count": "<DISTINCT-SIGNATURES-PER-UTC-DAY, integer>",
+    "fee": "<WORST-CASE-FEE-XLM-PER-UTC-DAY, e.g. 0.5>",
+    "maintenanceReserve": "<RESERVED-SIGNATURES-PER-UTC-DAY-INTEGER-AT-LEAST-1>"
+  },
+  "publicDailyAdmissions": 0
+}

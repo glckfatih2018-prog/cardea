@@ -1,0 +1,15 @@
+{
+  "date": "2026-09-30",
+  "network": "Stellar public network",
+  "scope": "Unfunded pilot before any signer signature",
+  "source": "Root-only snapshot of dedicated cardea_mainnet PostgreSQL database and private signer journal",
+  "restoredDatabase": "Temporary isolated PostgreSQL database, dropped after verification",
+  "restoredStateRows": 1,
+  "restoredAuditRows": 0,
+  "restoredArchiveRows": 0,
+  "restoredJournalRows": 0,
+  "signerAcceptedRestoredJournal": true,
+  "liveDatabaseRestoredOrModified": false,
+  "temporaryCopiesRemoved": true,
+  "limitation": "This proves restore mechanics only for an empty signer journal. Repeat with a nonempty journal after first mainnet signature, and establish an encrypted recurring backup."
+}
