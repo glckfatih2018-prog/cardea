@@ -20,7 +20,6 @@
   ],
   "feePayer": "<FEE-PAYER-PUBLIC-KEY-G...>",
   "baseFee": 1000,
-  "maxDailyAttempts": 3,
   "autoGraduate": false,
   "reserveCeiling": "<TOTAL-XLM-RESERVE-CEILING-ACROSS-ALL-POOLS, e.g. 150>",
   "signerLimits": {

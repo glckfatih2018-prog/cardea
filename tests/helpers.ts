@@ -137,9 +137,7 @@ export class FakeChain implements Chain {
     });
   }
 }
-export async function fixture(
-  options: { autoGraduate?: boolean; attempts?: number } = {},
-) {
+export async function fixture(options: { autoGraduate?: boolean } = {}) {
   const roles = Array.from({ length: 13 }, () => Keypair.random());
   const keys = roles.map((k) => k.secret());
   const config = validateConfig({
@@ -155,7 +153,6 @@ export async function fixture(
     channels: roles.slice(3).map((k) => k.publicKey()),
     feePayer: roles[2].publicKey(),
     baseFee: 1000,
-    maxDailyAttempts: options.attempts ?? 100,
     autoGraduate: options.autoGraduate ?? false,
   });
   const chain = new FakeChain();

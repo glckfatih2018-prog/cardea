@@ -132,7 +132,6 @@ if (!existsSync(".local/config.json")) {
     ),
     feePayer: keys.feePayer.publicKey(),
     baseFee: 1000,
-    maxDailyAttempts: 100,
     autoGraduate: true,
   };
   writeFileSync(".local/config.json", JSON.stringify(config, null, 2), {

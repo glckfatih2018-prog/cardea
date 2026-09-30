@@ -131,6 +131,28 @@ test("zero public admissions disables public preparation and signing but preserv
   }
 });
 
+test("null public daily admissions leaves financial and pool limits in charge", async () => {
+  const f = await fixture();
+  try {
+    await f.app.setAccess(f.p.id, "public");
+    f.config.publicDailyAdmissions = 1;
+    const first = await f.publicPrepare(f.users[0].publicKey());
+    await f.sign(first);
+    await f.land();
+    const second = await f.publicPrepare(f.users[1].publicKey());
+    await assert.rejects(
+      f.sign(second, 1),
+      /Public admission limit reached today/,
+    );
+    f.config.publicDailyAdmissions = null;
+    await f.sign(second, 1);
+    await f.land();
+    assert.equal((await f.store.read()).pools[0].sponsorships.length, 2);
+  } finally {
+    await f.close();
+  }
+});
+
 test("expired preparations release participant capacity; pending requests prevent lowering cap", async () => {
   const f = await fixture();
   try {

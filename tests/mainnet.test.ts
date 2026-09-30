@@ -82,10 +82,18 @@ test("mainnet pools cannot share a sponsor account or its deposited XLM", async 
     assert.equal(dashboard.pools.length, 2);
     assert.deepEqual(dashboard.assignedSponsors, c.sponsors);
     assert.notEqual(first.sponsor, second.sponsor);
-    assert.equal(dashboard.sponsorAccounts[c.sponsors[0]]?.balance, units("1000").toString());
-    assert.equal(dashboard.sponsorAccounts[c.sponsors[0]]?.available, units("999").toString());
+    assert.equal(
+      dashboard.sponsorAccounts[c.sponsors[0]]?.balance,
+      units("1000").toString(),
+    );
+    assert.equal(
+      dashboard.sponsorAccounts[c.sponsors[0]]?.available,
+      units("999").toString(),
+    );
   } finally {
-    await store.db.query("DELETE FROM cardea_audit WHERE namespace=$1", [c.namespace]);
+    await store.db.query("DELETE FROM cardea_audit WHERE namespace=$1", [
+      c.namespace,
+    ]);
     await store.db.query("DELETE FROM cardea_state WHERE id=$1", [c.namespace]);
     await store.close();
     await f.close();
@@ -235,6 +243,11 @@ test("mainnet configuration demands explicit acknowledgement, limits, namespace,
       validateConfig({ ...good, publicDailyAdmissions: 0 })
         .publicDailyAdmissions,
       0,
+    );
+    assert.equal(
+      validateConfig({ ...good, publicDailyAdmissions: null })
+        .publicDailyAdmissions,
+      null,
     );
     assert.throws(() => validateConfig({ ...good, publicDailyAdmissions: -1 }));
     const without = (key: string) => {
@@ -488,13 +501,13 @@ test("remote signer and journal refuse network mismatches; mainnet signer signs 
       /another network/,
     );
     const mainJournal = join(dir, "main.json");
-    assert.throws(() => signerServer(signerConfig, mainJournal), /journal missing/);
+    assert.throws(
+      () => signerServer(signerConfig, mainJournal),
+      /journal missing/,
+    );
     writeFileSync(mainJournal, "[]", { mode: 0o600 });
     const mainSocket = join(dir, "main.sock");
-    await listen(
-      signerServer(signerConfig, mainJournal),
-      mainSocket,
-    );
+    await listen(signerServer(signerConfig, mainJournal), mainSocket);
     // Requests without an explicit network, or for testnet, are refused on mainnet.
     await assert.rejects(
       new RemoteSigning(mainSocket, MAINNET.passphrase, payer).sign(
@@ -582,13 +595,16 @@ test("signer rejects an envelope valid at the next UTC budget boundary", async (
   try {
     const c = validateConfig(mainnetSigner(f.config), "signer");
     const make = (expires: number): SigningRequest => {
-      const tx = onboarding({
-        channel: f.config.channels[0],
-        sequence: "1",
-        sponsor: f.config.sponsors[0],
-        recipient: f.users[0].publicKey(),
-        expires,
-      }, MAINNET);
+      const tx = onboarding(
+        {
+          channel: f.config.channels[0],
+          sequence: "1",
+          sponsor: f.config.sponsors[0],
+          recipient: f.users[0].publicKey(),
+          expires,
+        },
+        MAINNET,
+      );
       tx.sign(f.users[0]);
       return {
         kind: "onboard",

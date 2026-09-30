@@ -2,8 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { fixture } from "./helpers.ts";
 // These tests assert the intended repaired invariant; initially reproduce audit failures.
-test("unsigned abandonment cannot consume another recipient daily admission", async () => {
-  const f = await fixture({ attempts: 1 });
+test("unsigned abandonment cannot consume another recipient retry allowance", async () => {
+  const f = await fixture();
   try {
     await f.prepare();
     f.chain.closedAt += 200;
@@ -302,7 +302,9 @@ test("failed graduation has a persistent recipient cooldown across new intents",
       i.reason = "Ledger rejected transaction";
     });
     // A failed ledger transaction still consumes its channel sequence.
-    const failed = (await f.store.read()).intents.find((i) => i.id === first.id)!;
+    const failed = (await f.store.read()).intents.find(
+      (i) => i.id === first.id,
+    )!;
     f.chain.accounts.get(failed.channel)!.sequence = failed.sequence;
     await assert.rejects(
       () => f.app.maintenance(f.p.id, f.users[0].publicKey()),

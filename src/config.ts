@@ -55,7 +55,6 @@ const schema = z
     channels: z.array(z.string()).min(1),
     feePayer: z.string(),
     baseFee: z.number().int().min(100).max(10000).default(1000),
-    maxDailyAttempts: z.number().int().min(1).max(1000).default(100),
     autoGraduate: z.boolean().default(true),
     /**
      * Installation-wide ceiling on committed plus pending sponsored reserve
@@ -81,12 +80,18 @@ const schema = z
       .strict()
       .optional(),
     /**
-     * Verified public (invitation-free) admissions per UTC day across all
-     * pools, enforced by the API after the recipient's signature. Testnet
-     * default: maxDailyAttempts. Mainnet: mandatory explicit value; zero
-     * disables public onboarding during a private pilot.
+     * Optional daily ceiling on verified public (invitation-free) admissions.
+     * Null means no daily admission count; zero disables public onboarding.
+     * Mainnet requires an explicit choice. Financial and pool limits apply
+     * regardless of this setting.
      */
-    publicDailyAdmissions: z.number().int().min(0).max(100000).optional(),
+    publicDailyAdmissions: z
+      .number()
+      .int()
+      .min(0)
+      .max(100000)
+      .nullable()
+      .optional(),
     /** Explicit mainnet opt-in. Absent on testnet. */
     mainnet: z
       .object({ acknowledge: z.literal(MAINNET_ACKNOWLEDGEMENT) })

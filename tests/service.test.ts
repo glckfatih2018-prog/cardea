@@ -185,7 +185,8 @@ test("a stale channel sequence cannot prepare a second transaction", () =>
     };
     await assert.rejects(() => f.prepare(1), /Channel sequence confirmation/);
     await assert.rejects(
-      () => f.app.maintenance(f.p.id, f.users[0].publicKey(), f.config.sponsors[1]),
+      () =>
+        f.app.maintenance(f.p.id, f.users[0].publicKey(), f.config.sponsors[1]),
       /Channel sequence confirmation/,
     );
     assert.equal((await f.store.read()).intents.length, 1);
@@ -246,16 +247,16 @@ test("wrong request token cannot read or sign", () =>
     await assert.rejects(() => f.app.status(r.id, "wrong"));
     await assert.rejects(() => f.app.submit(r.id, "wrong", r.xdr));
   }));
-test("attempt cap persists across cancelled or expired requests", () =>
-  use(
-    async (f) => {
-      const r = await f.prepare();
-      await f.sign(r);
-      await f.land();
-      await assert.rejects(() => f.prepare(1));
-    },
-    { attempts: 1 },
-  ));
+test("a verified recipient does not block another on the same UTC day", () =>
+  use(async (f) => {
+    const first = await f.prepare();
+    await f.sign(first);
+    await f.land();
+    const second = await f.prepare(1);
+    await f.sign(second, 1);
+    await f.land();
+    assert.equal((await f.store.read()).pools[0].sponsorships.length, 2);
+  }));
 test("graduation waits for reserve, then releases with no recipient signature", () =>
   use(async (f) => {
     const r = await f.prepare();

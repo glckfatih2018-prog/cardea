@@ -152,7 +152,11 @@ export class Cardea {
     return Math.min(t + 180, boundary - 1);
   }
   /** A channel read must cover the observed ledger and known landed sequences. */
-  private async channelAccount(channel: string, snap: NetworkSnapshot, s: State) {
+  private async channelAccount(
+    channel: string,
+    snap: NetworkSnapshot,
+    s: State,
+  ) {
     const read = await this.chain.accountWithLedger(channel);
     ensure(
       read.account &&
@@ -567,11 +571,6 @@ export class Cardea {
       "An onboarding is already pending",
     );
     const d = day();
-    ensure(
-      (p.attempts[d] ?? 0) < this.config.maxDailyAttempts,
-      "Daily attempt limit reached",
-      429,
-    );
     // Signed attempts are consumed only by this recipient's own verified
     // signature (see submit), so refusing early cannot be forced by a third party.
     ensure(
@@ -917,11 +916,6 @@ export class Cardea {
         throw new Problem(400, "Invalid signature or modified transaction");
       }
       const d = day();
-      ensure(
-        (p.attempts[d] ?? 0) < this.config.maxDailyAttempts,
-        "Daily attempt limit reached",
-        429,
-      );
       // Enforced only after the recipient's own signature verified: nobody else
       // can spend this counter, and a failed institution signing rolls it back.
       const signedAttempt = retryKey("signed", d, i.recipient);
@@ -931,11 +925,10 @@ export class Cardea {
         "Recipient retry limit reached",
         429,
       );
-      // Installation-wide public admission sub-quota, after recipient proof,
-      // inside the same transaction. Private invitations are not affected.
-      const publicLimit =
-        this.config.publicDailyAdmissions ?? this.config.maxDailyAttempts;
-      if (i.admission === "public")
+      // If configured, apply the installation-wide public admission count
+      // after recipient proof. Private invitations are not affected.
+      const publicLimit = this.config.publicDailyAdmissions;
+      if (i.admission === "public" && publicLimit != null)
         ensure(
           ((s.publicSigned ??= {})[d] ?? 0) < publicLimit,
           "Public admission limit reached today",
@@ -1783,7 +1776,9 @@ export class Cardea {
         try {
           const account = await this.chain.account(id);
           if (!account) return [id, null] as const;
-          const balance = account.balances.find((b) => b.asset_type === "native");
+          const balance = account.balances.find(
+            (b) => b.asset_type === "native",
+          );
           return [
             id,
             balance
