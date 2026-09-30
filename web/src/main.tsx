@@ -12,6 +12,7 @@ import React, { useState, useEffect, useSyncExternalStore } from "react";
 import { createRoot } from "react-dom/client";
 import {
   requestAccess,
+  getAddress,
   getNetwork,
   signTransaction,
   isConnected,
@@ -440,7 +441,9 @@ function Dashboard() {
               </button>
               {net?.name === "mainnet" && availableSponsors.length === 0 && (
                 <p className="muted">
-                  {t("Each mainnet pool needs its own configured sponsor account. Ask the installation operator to add a separate account before creating another pool.")}
+                  {t(
+                    "Each mainnet pool needs its own configured sponsor account. Ask the installation operator to add a separate account before creating another pool.",
+                  )}
                 </p>
               )}
             </form>
@@ -866,14 +869,17 @@ function Dashboard() {
                 {net?.name === "mainnet" && (
                   <>
                     <p className="muted">
-                      {t("Send only the XLM amount you choose from your personal wallet to this dedicated pool account. Cardea does not receive signing permission for your personal wallet. The pool account is controlled by this installation's signer and its XLM can be used for sponsorship until the configured limits or funds run out.")}
+                      {t(
+                        "Send only the XLM amount you choose from your personal wallet to this dedicated pool account. Cardea does not receive signing permission for your personal wallet. The pool account is controlled by this installation's signer and its XLM can be used for sponsorship until the configured limits or funds run out.",
+                      )}
                     </p>
                     <button
                       className="secondary"
                       onClick={() =>
                         navigator.clipboard.writeText(p.sponsor).then(
                           () => setMessage("Pool account address copied"),
-                          () => setError("Copy the pool account address manually"),
+                          () =>
+                            setError("Copy the pool account address manually"),
                         )
                       }
                     >
@@ -882,17 +888,21 @@ function Dashboard() {
                     <p>
                       {t("Pool account balance:")}{" "}
                       {data.sponsorAccounts?.[p.sponsor]
-                        ? money(data.sponsorAccounts[p.sponsor].balance) + " XLM"
+                        ? money(data.sponsorAccounts[p.sponsor].balance) +
+                          " XLM"
                         : t("Unfunded or balance unavailable")}
                     </p>
                     <p>
                       {t("Available after Stellar reserves:")}{" "}
                       {data.sponsorAccounts?.[p.sponsor]
-                        ? money(data.sponsorAccounts[p.sponsor].available) + " XLM"
+                        ? money(data.sponsorAccounts[p.sponsor].available) +
+                          " XLM"
                         : t("Unfunded or balance unavailable")}
                     </p>
                     <p className="muted">
-                      {t("The reserve limit is an application policy, not a wallet spending allowance. Keep only the amount you intend to sponsor in this account; existing sponsored reserves stay locked until released or transferred.")}
+                      {t(
+                        "The reserve limit is an application policy, not a wallet spending allowance. Keep only the amount you intend to sponsor in this account; existing sponsored reserves stay locked until released or transferred.",
+                      )}
                     </p>
                   </>
                 )}
@@ -1021,7 +1031,8 @@ function Onboard({ poolId }: { poolId?: string }) {
       ? "Switch Freighter to Stellar Mainnet (Public network), then connect again."
       : "Switch Freighter to Stellar Testnet, then connect again.";
   useEffect(() => {
-    if (!request) return;
+    if (!request || !recipient || request.recipient !== recipient) return;
+    let active = true;
     const poll = () =>
       api(
         `/onboarding/${request.id}/status`,
@@ -1029,12 +1040,62 @@ function Onboard({ poolId }: { poolId?: string }) {
         undefined,
         request.token,
       )
-        .then(setStatus)
-        .catch((e) => setError(e.message));
+        .then((next) => {
+          if (active) setStatus(next);
+        })
+        .catch((e) => {
+          if (active) setError(e.message);
+        });
     poll();
     const t = setInterval(poll, 4000);
-    return () => clearInterval(t);
-  }, [request]);
+    return () => {
+      active = false;
+      clearInterval(t);
+    };
+  }, [request, recipient]);
+  useEffect(() => {
+    let active = true;
+    const checkWallet = async () => {
+      if (busy) return;
+      try {
+        const [wallet, network] = await Promise.all([
+          getAddress(),
+          getNetwork(),
+        ]);
+        if (!active) return;
+        const address = wallet.error ? "" : wallet.address;
+        const onCorrectNetwork =
+          !!net && network.networkPassphrase === net.passphrase;
+        if (request && address && request.recipient !== address) {
+          sessionStorage.removeItem("cardea-request:" + requestKey);
+          setRequest(null);
+          setStatus(null);
+          setRecipient("");
+        } else if (request && (!address || !onCorrectNetwork)) {
+          setRecipient("");
+          setStatus(null);
+        } else if (request && !recipient && onCorrectNetwork) {
+          setRecipient(address);
+        } else if (recipient && (recipient !== address || !onCorrectNetwork)) {
+          setRecipient("");
+          setStatus(null);
+        }
+      } catch {
+        if (active) {
+          setStatus(null);
+          setRecipient("");
+        }
+      }
+    };
+    void checkWallet();
+    const interval = setInterval(checkWallet, 4000);
+    window.addEventListener("focus", checkWallet);
+    return () => {
+      active = false;
+      clearInterval(interval);
+      window.removeEventListener("focus", checkWallet);
+    };
+  }, [net, request, recipient, requestKey, busy]);
   const connect = async () => {
     setError("");
     setBusy(true);
@@ -1078,6 +1139,9 @@ function Onboard({ poolId }: { poolId?: string }) {
       const n = await getNetwork();
       if (n.networkPassphrase !== fresh.passphrase)
         throw new Error(switchMessage(fresh));
+      const wallet = await getAddress();
+      if (wallet.error || wallet.address !== recipient)
+        throw new Error("Wallet changed. Connect the current wallet again.");
       let r = request;
       if (
         !r ||
@@ -1090,6 +1154,7 @@ function Onboard({ poolId }: { poolId?: string }) {
           poolId ? { pool: poolId, recipient } : { invite, recipient },
         );
         r = { ...r, recipient };
+        setStatus(null);
         setRequest(r);
         sessionStorage.setItem(
           "cardea-request:" + requestKey,
@@ -1123,8 +1188,11 @@ function Onboard({ poolId }: { poolId?: string }) {
       setBusy(false);
     }
   };
-  const success = status?.state === "CONFIRMED";
-  const pending = ["READY", "UNKNOWN"].includes(status?.state);
+  const statusForWallet =
+    !!request && !!recipient && request.recipient === recipient && !!status;
+  const success = statusForWallet && status.state === "CONFIRMED";
+  const pending =
+    statusForWallet && ["READY", "UNKNOWN"].includes(status.state);
   return (
     <main className="recipient">
       {poolId && (
@@ -1209,7 +1277,12 @@ function Onboard({ poolId }: { poolId?: string }) {
           )}
         </p>
       )}
-      {status && (
+      {success && (
+        <button className="secondary" disabled={busy || !net} onClick={connect}>
+          {t("Change wallet")}
+        </button>
+      )}
+      {statusForWallet && (
         <div className="panel">
           <strong>{t(status.state)}</strong>
           {status.reason && <p>{t(status.reason)}</p>}
