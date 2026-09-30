@@ -451,14 +451,17 @@ test("remote signer and journal refuse network mismatches; mainnet signer signs 
       /rejected/,
     );
     // A client that believes it is on mainnet must not accept a testnet-signed envelope.
+    // Reuse the exact envelope below: rebuilding after a second boundary changes
+    // its expiry/hash and correctly triggers the signer's sequence conflict guard.
+    const testnetRequest = request(TESTNET, 0, TESTNET.passphrase);
     await assert.rejects(
       new RemoteSigning(testSocket, MAINNET.passphrase, payer).sign(
-        request(TESTNET, 0, TESTNET.passphrase),
+        testnetRequest,
       ),
       /not signed for this network/,
     );
     const ok = await new RemoteSigning(testSocket, NETWORK, payer).sign(
-      request(TESTNET, 0, TESTNET.passphrase),
+      testnetRequest,
     );
     assert.equal(ok.innerTransaction.networkPassphrase, TESTNET.passphrase);
     // A journal written by another network's signer is refused at startup.
